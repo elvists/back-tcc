@@ -1,8 +1,6 @@
 package br.ufba.back.service;
 
 import br.ufba.back.model.ConfigurationData;
-import br.ufba.back.model.PredictionResult;
-import br.ufba.back.model.RankingResult;
 import br.ufba.back.model.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Table;

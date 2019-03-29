@@ -18,4 +18,5 @@ dependencies {
 	compile group: 'com.google.guava', name: 'guava', version: '27.1-jre'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compile fileTree(include: ['*.jar'], dir: 'libs')
 }
