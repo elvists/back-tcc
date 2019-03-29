@@ -83,7 +83,7 @@ public class TimeSVD extends IterativeRecommender {
 
 		algoName = "timeSVD++";
 
-		algoOptions = cf.getParamOptions("timeSVD++");
+		algoOptions = cf.getParamOptions(cf.getAlgoName());
 		beta = algoOptions.getFloat("-beta");
 		numBins = algoOptions.getInt("-bins");
 	}

@@ -133,7 +133,7 @@ public class GraphicRecommender extends Recommender {
 			numFactors = cf.getNumFactors() != null? cf.getNumFactors():10;
 			numFactors = cf.getNumMaxIter() != null? cf.getNumMaxIter():30;
 
-			pgmOptions = cf.getParamOptions("pgm.setup");
+			pgmOptions = cf.getParamOptions(cf.getPgmSetup());
 			if (pgmOptions != null) {
 				burnIn = pgmOptions.getInt("-burn-in");
 				sampleLag = pgmOptions.getInt("-sample-lag");

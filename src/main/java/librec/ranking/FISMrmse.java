@@ -65,7 +65,7 @@ public class FISMrmse extends IterativeRecommender {
 		itemBias.init(0.01);
 
 		nnz = trainMatrix.size();
-		algoOptions = cf.getParamOptions("FISM");
+		algoOptions = cf.getParamOptions(cf.getAlgoName());
 		rho = algoOptions.getFloat("-rho");
 		alpha = algoOptions.getFloat("-alpha");
 

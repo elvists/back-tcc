@@ -20,6 +20,33 @@ public class ConfigurationData {
     private Integer numMaxIter;
     private Integer minTrustDegree;
     private String datasetSocial;
+    private String regLambda;
+    private String learnRate;
+    private String pgmSetup;
+
+    public String getPgmSetup() {
+        return pgmSetup;
+    }
+
+    public void setPgmSetup(String pgmSetup) {
+        this.pgmSetup = pgmSetup;
+    }
+
+    public String getLearnRate() {
+        return learnRate;
+    }
+
+    public void setLearnRate(String learnRate) {
+        this.learnRate = learnRate;
+    }
+
+    public String getRegLambda() {
+        return regLambda;
+    }
+
+    public void setRegLambda(String regLambda) {
+        this.regLambda = regLambda;
+    }
 
     public String getDatasetSocial() {
         return datasetSocial;

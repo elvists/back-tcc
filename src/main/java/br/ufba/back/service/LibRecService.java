@@ -1,6 +1,10 @@
 package br.ufba.back.service;
 
 import br.ufba.back.model.ConfigurationData;
+import br.ufba.back.model.PredictionResult;
+import br.ufba.back.model.RankingResult;
+import br.ufba.back.model.Result;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Table;
 import happy.coding.io.FileIO;
 import happy.coding.io.LineConfiger;
@@ -25,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static librec.intf.Recommender.tempDirPath;
+import static librec.intf.Recommender.*;
 
 
 @Service
@@ -43,8 +47,9 @@ public class LibRecService {
 
     public static boolean isMeasuresOnly = false;
     private TimeUnit timeUnit;
+    private String algorithm;
 
-    public void run(ConfigurationData config) throws Exception {
+    public Result run(ConfigurationData config) throws Exception {
 
 
         // reset general settings
@@ -54,15 +59,15 @@ public class LibRecService {
         readData(config);
 
         // run a specific algorithm
-        runAlgorithm();
+        Result result = runAlgorithm();
 //
 //        // collect results
-//        String filename = (configFiles.size() > 1 ? "multiAlgorithms" : algorithm) + "@" + Dates.now() + ".txt";
-//        String results = tempDirPath + filename;
-//        FileIO.copyFile("results.txt", results);
-//
+       String filename =  algorithm + "@" + Dates.now() + ".txt";
+       String results = tempDirPath + filename;
+
 //        // send notification
 //        notifyMe(results);
+        return result;
     }
 
     private void preset(ConfigurationData configFile) {
@@ -109,7 +114,7 @@ public class LibRecService {
         Recommender.binThold = binThold;
     }
 
-    protected void runAlgorithm() throws Exception {
+    protected Result runAlgorithm() throws Exception {
 
         // evaluation setup
         String setup = cf.getEvaluationSetup();
@@ -131,8 +136,7 @@ public class LibRecService {
 
         switch (evalOptions.getMainParam().toLowerCase()) {
             case "cv":
-                runCrossValidation(evalOptions);
-                return; // make it close
+                return runCrossValidation(evalOptions);
             default:
                 ratio = evalOptions.getDouble("-r", 0.8);
                 data = ds.getRatioByRating(ratio);
@@ -142,10 +146,10 @@ public class LibRecService {
         algo = getRecommender(data, -1);
         algo.execute();
 
-        printEvalInfo(algo, algo.measures);
+        return printEvalInfo(algo, algo.measures);
     }
 
-    private void runCrossValidation(LineConfiger params) throws Exception {
+    private Result runCrossValidation(LineConfiger params) throws Exception {
 
         int kFold = params.getInt("-k", 5);
         boolean isParallelFold = params.isOn("-p", true);
@@ -180,7 +184,7 @@ public class LibRecService {
             }
         }
 
-        printEvalInfo(algos[0], avgMeasure);
+        return printEvalInfo(algos[0], avgMeasure);
     }
 
     protected void writeData(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
@@ -234,7 +238,7 @@ public class LibRecService {
 
     protected Recommender getRecommender(SparseMatrix[] data, int fold) throws Exception {
 
-        String algorithm = cf.getRecommender();
+        algorithm = cf.getRecommender();
 
         SparseMatrix trainMatrix = data[0], testMatrix = data[1];
 
@@ -355,17 +359,20 @@ public class LibRecService {
         }
     }
 
-    private void printEvalInfo(Recommender algo, Map<Recommender.Measure, Double> ms) {
+    private Result printEvalInfo(Recommender algo, Map<Recommender.Measure, Double> ms) {
 
+        final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
         String result = Recommender.getEvalInfo(ms);
+
         // we add quota symbol to indicate the textual format of time
-        String time = String.format("'%s','%s'", Dates.parse(ms.get(Recommender.Measure.TrainTime).longValue()),
+        String time = String.format("'%s',  '%s'", Dates.parse(ms.get(Recommender.Measure.TrainTime).longValue()),
                 Dates.parse(ms.get(Recommender.Measure.TestTime).longValue()));
         // double commas as the separation of results and configuration
         String evalInfo = String.format("%s,%s,,%s,%s%s", algo.algoName, result, algo.toString(), time,
                 (outputOptions.contains("--measures-only") ? "" : "\n"));
 
         Logs.info(evalInfo);
+        return Recommender.getResult(ms);
     }
 
 }

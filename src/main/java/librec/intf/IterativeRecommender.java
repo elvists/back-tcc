@@ -85,7 +85,7 @@ public abstract class IterativeRecommender extends Recommender {
 		if (resetStatics) {
 			resetStatics = false;
 
-			LineConfiger lc = cf.getParamOptions("learn.rate");
+			LineConfiger lc = cf.getParamOptions(cf.getLearnRate());
 			if (lc != null) {
 				initLRate = Float.parseFloat(lc.getMainParam());
 				maxLRate = lc.getFloat("-max", -1);
@@ -94,7 +94,7 @@ public abstract class IterativeRecommender extends Recommender {
 				momentum = lc.getFloat("-momentum", 50);
 			}
 
-			regOptions = cf.getParamOptions("reg.lambda");
+			regOptions = cf.getParamOptions(cf.getRegLambda());
 			if (regOptions != null) {
 				reg = Float.parseFloat(regOptions.getMainParam());
 				regU = regOptions.getFloat("-u", reg);

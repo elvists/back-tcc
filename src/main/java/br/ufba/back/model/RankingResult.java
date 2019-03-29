@@ -1,88 +1,119 @@
-package main.java.br.ufba.model;
+package br.ufba.back.model;
 
 
-import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.gson.annotations.SerializedName;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RankingResult extends Result {
-    private BigDecimal prec5;
-    private BigDecimal prec10;
-    private BigDecimal recall5;
-    private BigDecimal recall10;
-    private BigDecimal auc;
-    private BigDecimal map;
-    private BigDecimal ndcg;
-    private BigDecimal mrr;
-    private Configuration configuration;
 
-    public BigDecimal getPrec5() {
+    @SerializedName("Pre5")
+    private Double prec5;
+
+    @SerializedName("Pre10")
+    private Double prec10;
+
+    @SerializedName("Rec5")
+    private Double recall5;
+
+    @SerializedName("Rec10")
+    private Double recall10;
+
+    @SerializedName("AUC")
+    private Double auc;
+
+    @SerializedName("MAP")
+    private Double map;
+
+    @SerializedName("NDCG")
+    private Double ndcg;
+
+    @SerializedName("MRR")
+    private Double mrr;
+
+    @SerializedName("D10")
+    private Double d10;
+
+    @SerializedName("D5")
+    private Double d5;
+
+    public Double getD10() {
+        return d10;
+    }
+
+    public void setD10(Double d10) {
+        this.d10 = d10;
+    }
+
+    public Double getD5() {
+        return d5;
+    }
+
+    public void setD5(Double d5) {
+        this.d5 = d5;
+    }
+
+    public Double getPrec5() {
         return prec5;
     }
 
-    public void setPrec5(BigDecimal prec5) {
+    public void setPrec5(Double prec5) {
         this.prec5 = prec5;
     }
 
-    public BigDecimal getPrec10() {
+    public Double getPrec10() {
         return prec10;
     }
 
-    public void setPrec10(BigDecimal prec10) {
+    public void setPrec10(Double prec10) {
         this.prec10 = prec10;
     }
 
-    public BigDecimal getRecall5() {
+    public Double getRecall5() {
         return recall5;
     }
 
-    public void setRecall5(BigDecimal recall5) {
+    public void setRecall5(Double recall5) {
         this.recall5 = recall5;
     }
 
-    public BigDecimal getRecall10() {
+    public Double getRecall10() {
         return recall10;
     }
 
-    public void setRecall10(BigDecimal recall10) {
+    public void setRecall10(Double recall10) {
         this.recall10 = recall10;
     }
 
-    public BigDecimal getAuc() {
+    public Double getAuc() {
         return auc;
     }
 
-    public void setAuc(BigDecimal auc) {
+    public void setAuc(Double auc) {
         this.auc = auc;
     }
 
-    public BigDecimal getMap() {
+    public Double getMap() {
         return map;
     }
 
-    public void setMap(BigDecimal map) {
+    public void setMap(Double map) {
         this.map = map;
     }
 
-    public BigDecimal getNdcg() {
+    public Double getNdcg() {
         return ndcg;
     }
 
-    public void setNdcg(BigDecimal ndcg) {
+    public void setNdcg(Double ndcg) {
         this.ndcg = ndcg;
     }
 
-    public BigDecimal getMrr() {
+    public Double getMrr() {
         return mrr;
     }
 
-    public void setMrr(BigDecimal mrr) {
+    public void setMrr(Double mrr) {
         this.mrr = mrr;
-    }
-
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
     }
 }

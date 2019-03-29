@@ -19,7 +19,9 @@
 package librec.intf;
 
 import br.ufba.back.model.ConfigurationData;
-import happy.coding.io.FileConfiger;
+import br.ufba.back.model.PredictionResult;
+import br.ufba.back.model.RankingResult;
+import br.ufba.back.model.Result;
 import happy.coding.io.FileIO;
 import happy.coding.io.LineConfiger;
 import happy.coding.io.Lists;
@@ -253,7 +255,7 @@ public abstract class Recommender implements Runnable {
 			Randoms.seed(evalOptions.getLong("--rand-seed", System.currentTimeMillis())); // initial random seed
 
 			// output options
-			LineConfiger outputOptions = cf.getParamOptions("output.setup");
+			LineConfiger outputOptions = cf.getParamOptions(cf.getOutputSetup());
 			if (outputOptions != null) {
 				verbose = outputOptions.isOn("-verbose", true);
 				isSaveModel = outputOptions.contains("--save-main.java.br.ufba.model");
@@ -284,7 +286,7 @@ public abstract class Recommender implements Runnable {
 		foldInfo = fold > 0 ? " fold [" + fold + "]" : "";
 
 		// whether to write out results
-		LineConfiger outputOptions = cf.getParamOptions("output.setup");
+		LineConfiger outputOptions = cf.getParamOptions(cf.getOutputSetup());
 		if (outputOptions != null) {
 			isResultsOut = outputOptions.isMainOn();
 		}
@@ -438,6 +440,40 @@ public abstract class Recommender implements Runnable {
 		}
 
 		return evalInfo;
+	}
+
+	public static Result getResult(Map<Measure, Double> measures) {
+		Result r;
+		if (isRankingPred) {
+			r = new RankingResult();
+
+			((RankingResult) r).setPrec5(measures.get(Measure.Pre5));
+			((RankingResult) r).setPrec10(measures.get(Measure.Pre10));
+			((RankingResult) r).setRecall5(measures.get(Measure.Rec5));
+			((RankingResult) r).setRecall10(measures.get(Measure.Rec10));
+			((RankingResult) r).setAuc(measures.get(Measure.AUC));
+			((RankingResult) r).setMap(measures.get(Measure.MAP));
+			((RankingResult) r).setNdcg(measures.get(Measure.NDCG));
+			((RankingResult) r).setMrr(measures.get(Measure.MRR));
+			if (isDiverseUsed){
+				((RankingResult) r).setD5(measures.get(Measure.D5));
+				((RankingResult) r).setD10(measures.get(Measure.D10));
+			}
+		} else {
+			r = new PredictionResult();
+			((PredictionResult) r).setMae(measures.get(Measure.MAE));
+			((PredictionResult) r).setRmse(measures.get(Measure.RMSE));
+			((PredictionResult) r).setNmae(measures.get(Measure.NMAE));
+			((PredictionResult) r).setRmae(measures.get(Measure.rMAE));
+			((PredictionResult) r).setRrmse(measures.get(Measure.rRMSE));
+			((PredictionResult) r).setMpe(measures.get(Measure.MPE));
+
+			if (measures.containsKey(Measure.Perplexity)) {
+				((PredictionResult) r).setPerplexity(measures.get(Measure.Perplexity));
+			}
+		}
+
+		return r;
 	}
 
 	/**

@@ -1,69 +1,88 @@
-package main.java.br.ufba.model;
+package br.ufba.back.model;
 
-import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.gson.annotations.SerializedName;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PredictionResult extends Result {
-    private BigDecimal mae;
-    private BigDecimal rmse;
-    private BigDecimal nmae;
-    private BigDecimal rmae;
-    private BigDecimal rrmse;
-    private BigDecimal mpe;
-    private Configuration configuration;
 
-    public BigDecimal getMae() {
+    @SerializedName("MAE")
+    private Double mae;
+
+    @SerializedName("RMSE")
+    private Double rmse;
+
+    @SerializedName("nMAE")
+    private Double nmae;
+
+    @SerializedName("rMAE")
+    private Double rmae;
+
+    @SerializedName("rRMSE")
+    private Double rrmse;
+
+    public Double getPerplexity() {
+        return perplexity;
+    }
+
+    public void setPerplexity(Double perplexity) {
+        this.perplexity = perplexity;
+    }
+
+    @SerializedName("MPE")
+    private Double mpe;
+
+
+    @SerializedName("Perplexity")
+    private Double perplexity;
+
+
+
+    public Double getMae() {
         return mae;
     }
 
-    public void setMae(BigDecimal mae) {
+    public void setMae(Double mae) {
         this.mae = mae;
     }
 
-    public BigDecimal getRmse() {
+    public Double getRmse() {
         return rmse;
     }
 
-    public void setRmse(BigDecimal rmse) {
+    public void setRmse(Double rmse) {
         this.rmse = rmse;
     }
 
-    public BigDecimal getNmae() {
+    public Double getNmae() {
         return nmae;
     }
 
-    public void setNmae(BigDecimal nmae) {
+    public void setNmae(Double nmae) {
         this.nmae = nmae;
     }
 
-    public BigDecimal getRmae() {
+    public Double getRmae() {
         return rmae;
     }
 
-    public void setRmae(BigDecimal rmae) {
+    public void setRmae(Double rmae) {
         this.rmae = rmae;
     }
 
-    public BigDecimal getRrmse() {
+    public Double getRrmse() {
         return rrmse;
     }
 
-    public void setRrmse(BigDecimal rrmse) {
+    public void setRrmse(Double rrmse) {
         this.rrmse = rrmse;
     }
 
-    public BigDecimal getMpe() {
+    public Double getMpe() {
         return mpe;
     }
 
-    public void setMpe(BigDecimal mpe) {
+    public void setMpe(Double mpe) {
         this.mpe = mpe;
-    }
-
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
     }
 }
