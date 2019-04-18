@@ -442,38 +442,40 @@ public abstract class Recommender implements Runnable {
 		return evalInfo;
 	}
 
-	public static Result getResult(Map<Measure, Double> measures) {
-		Result r;
+	public static Map<String, Double> getResult(Map<Measure, Double> measures) {
+		Map<String, Double> map = new HashMap<>();
 		if (isRankingPred) {
-			r = new RankingResult();
+			map.put("isRankingPred" , (double) 1);
+			map.put(String.valueOf(Measure.Pre5), measures.get(Measure.Pre5));
+			map.put(String.valueOf(Measure.Pre10), measures.get(Measure.Pre10));
+			map.put(String.valueOf(Measure.Rec5), measures.get(Measure.Rec5));
+			map.put(String.valueOf(Measure.Rec10), measures.get(Measure.Rec10));
+			map.put(String.valueOf(Measure.AUC), measures.get(Measure.AUC));
+			map.put(String.valueOf(Measure.MAP), measures.get(Measure.MAP));
+			map.put(String.valueOf(Measure.NDCG), measures.get(Measure.NDCG));
+			map.put(String.valueOf(Measure.MRR), measures.get(Measure.MRR));
 
-			((RankingResult) r).setPrec5(measures.get(Measure.Pre5));
-			((RankingResult) r).setPrec10(measures.get(Measure.Pre10));
-			((RankingResult) r).setRecall5(measures.get(Measure.Rec5));
-			((RankingResult) r).setRecall10(measures.get(Measure.Rec10));
-			((RankingResult) r).setAuc(measures.get(Measure.AUC));
-			((RankingResult) r).setMap(measures.get(Measure.MAP));
-			((RankingResult) r).setNdcg(measures.get(Measure.NDCG));
-			((RankingResult) r).setMrr(measures.get(Measure.MRR));
 			if (isDiverseUsed){
-				((RankingResult) r).setD5(measures.get(Measure.D5));
-				((RankingResult) r).setD10(measures.get(Measure.D10));
+				map.put(String.valueOf(Measure.D5), measures.get(Measure.D5));
+				map.put(String.valueOf(Measure.D10), measures.get(Measure.D10));
 			}
 		} else {
-			r = new PredictionResult();
-			((PredictionResult) r).setMae(measures.get(Measure.MAE));
-			((PredictionResult) r).setRmse(measures.get(Measure.RMSE));
-			((PredictionResult) r).setNmae(measures.get(Measure.NMAE));
-			((PredictionResult) r).setRmae(measures.get(Measure.rMAE));
-			((PredictionResult) r).setRrmse(measures.get(Measure.rRMSE));
-			((PredictionResult) r).setMpe(measures.get(Measure.MPE));
+
+			map.put("isRankingPred" , (double) 0);
+			map.put(String.valueOf(Measure.MAE), measures.get(Measure.MAE));
+			map.put(String.valueOf(Measure.RMSE), measures.get(Measure.RMSE));
+			map.put(String.valueOf(Measure.NMAE), measures.get(Measure.NMAE));
+			map.put(String.valueOf(Measure.rMAE), measures.get(Measure.rMAE));
+			map.put(String.valueOf(Measure.rRMSE), measures.get(Measure.rRMSE));
+			map.put(String.valueOf(Measure.MPE), measures.get(Measure.MPE));
 
 			if (measures.containsKey(Measure.Perplexity)) {
-				((PredictionResult) r).setPerplexity(measures.get(Measure.Perplexity));
+				map.put(String.valueOf(Measure.Perplexity), measures.get(Measure.Perplexity));
 			}
+
 		}
 
-		return r;
+		return map;
 	}
 
 	/**

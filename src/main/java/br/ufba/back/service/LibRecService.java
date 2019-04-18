@@ -1,7 +1,6 @@
 package br.ufba.back.service;
 
 import br.ufba.back.model.ConfigurationData;
-import br.ufba.back.model.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Table;
 import happy.coding.io.FileIO;
@@ -47,7 +46,7 @@ public class LibRecService {
     private TimeUnit timeUnit;
     private String algorithm;
 
-    public Result run(ConfigurationData config) throws Exception {
+    public Map<String, Double> run(ConfigurationData config) throws Exception {
 
 
         // reset general settings
@@ -57,7 +56,7 @@ public class LibRecService {
         readData(config);
 
         // run a specific algorithm
-        Result result = runAlgorithm();
+        Map<String, Double> result = runAlgorithm();
 //
 //        // collect results
        String filename =  algorithm + "@" + Dates.now() + ".txt";
@@ -112,7 +111,7 @@ public class LibRecService {
         Recommender.binThold = binThold;
     }
 
-    protected Result runAlgorithm() throws Exception {
+    protected Map<String, Double> runAlgorithm() throws Exception {
 
         // evaluation setup
         String setup = cf.getEvaluationSetup();
@@ -147,7 +146,7 @@ public class LibRecService {
         return printEvalInfo(algo, algo.measures);
     }
 
-    private Result runCrossValidation(LineConfiger params) throws Exception {
+    private Map<String, Double> runCrossValidation(LineConfiger params) throws Exception {
 
         int kFold = params.getInt("-k", 5);
         boolean isParallelFold = params.isOn("-p", true);
@@ -357,7 +356,7 @@ public class LibRecService {
         }
     }
 
-    private Result printEvalInfo(Recommender algo, Map<Recommender.Measure, Double> ms) {
+    private Map<String, Double> printEvalInfo(Recommender algo, Map<Measure, Double> ms) {
 
         final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
         String result = Recommender.getEvalInfo(ms);
