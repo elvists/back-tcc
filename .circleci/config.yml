@@ -40,5 +40,7 @@ jobs:
 
       # run tests!
       - run: gradle test
+      - setup_remote_docker:
+        docker_layer_caching: true
       - run: docker build -t elvists/tcc-back:$CIRCLE_BRANCH .
       - run: docker push elvists/tcc-back:$CIRCLE_BRANCH
