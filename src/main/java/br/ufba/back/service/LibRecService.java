@@ -166,7 +166,6 @@ public class LibRecService {
             if (!isParallelFold)
                 ts[i].join();
         }
-
         if (isParallelFold)
             for (Thread t : ts)
                 t.join();
@@ -180,7 +179,7 @@ public class LibRecService {
                 avgMeasure.put(m, val + en.getValue() / kFold);
             }
         }
-
+        GraphicRecommender.isInitialized = false;
         return printEvalInfo(algos[0], avgMeasure);
     }
 

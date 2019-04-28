@@ -131,7 +131,7 @@ public class GraphicRecommender extends Recommender {
 			isInitialized = true;
 
 			numFactors = cf.getNumFactors() != null? cf.getNumFactors():10;
-			numFactors = cf.getNumMaxIter() != null? cf.getNumMaxIter():30;
+			numIters = cf.getNumMaxIter() != null? cf.getNumMaxIter():30;
 
 			pgmOptions = cf.getParamOptions(cf.getPgmSetup());
 			if (pgmOptions != null) {
