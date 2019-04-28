@@ -40,3 +40,6 @@ jobs:
 
       # run tests!
       - run: gradle test
+  dockerfile:
+    - run: docker build -t elvists/tcc-back:$CIRCLE_BRANCH .
+    - run: docker push elvists/tcc-back:$CIRCLE_BRANCH
