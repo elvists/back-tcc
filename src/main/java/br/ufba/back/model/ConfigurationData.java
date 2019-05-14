@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class ConfigurationData {
 
+    private Boolean asynchronous;
     private String dataset;
     private String outputSetup;
     private String evaluationSetup;
@@ -175,5 +176,14 @@ public class ConfigurationData {
     public LineConfiger getParamOptions(String key) {
         return key == null ? null : new LineConfiger(key);
     }
+
+    public Boolean getAsynchronous() {
+        return asynchronous;
+    }
+
+    public void setAsynchronous(Boolean asynchronous) {
+        this.asynchronous = asynchronous;
+    }
+
 
 }
