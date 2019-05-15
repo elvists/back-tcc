@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class ConfigurationData {
 
+    private StatusReading status;
     private Boolean asynchronous;
     private String dataset;
     private String outputSetup;
@@ -183,6 +184,14 @@ public class ConfigurationData {
 
     public void setAsynchronous(Boolean asynchronous) {
         this.asynchronous = asynchronous;
+    }
+
+    public StatusReading getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusReading status) {
+        this.status = status;
     }
 
 

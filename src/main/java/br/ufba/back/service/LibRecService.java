@@ -1,6 +1,8 @@
 package br.ufba.back.service;
 
 import br.ufba.back.model.ConfigurationData;
+import br.ufba.back.model.ScheduleObject;
+import br.ufba.back.model.StatusReading;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Table;
 import happy.coding.io.FileIO;
@@ -36,7 +38,7 @@ import static librec.intf.Recommender.*;
 public class LibRecService {
 
 
-    private List<ConfigurationData> listToRun = new ArrayList<>();
+    private List<ScheduleObject> scheduleList =  new  ArrayList<>();
     protected float binThold;
     protected int[] columns;
 
@@ -448,9 +450,21 @@ public class LibRecService {
     }
 
     boolean existsConfigToRun(){
-        if(listToRun.isEmpty()){
+        if(scheduleList.isEmpty()){
             return false;
         }
-        return true;
+        for (ScheduleObject scheduleObject: scheduleList) {
+            if(scheduleObject.getStatus() == StatusReading.WAITING){
+                return true;
+            }else if(scheduleObject.getStatus() == StatusReading.RUN){
+                for (ConfigurationData config: scheduleObject.getListConfiguration()){
+                    if(config.getStatus() == StatusReading.WAITING){
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }
