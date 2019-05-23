@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static librec.intf.Recommender.*;
+import static librec.intf.Recommender.Measure;
+import static librec.intf.Recommender.tempDirPath;
 
 
 @Service
@@ -38,7 +39,7 @@ import static librec.intf.Recommender.*;
 public class LibRecService {
 
 
-    private List<ScheduleObject> scheduleList =  new  ArrayList<>();
+    private List<ScheduleObject> scheduleList = new ArrayList<>();
     protected float binThold;
     protected int[] columns;
 
@@ -66,8 +67,8 @@ public class LibRecService {
         Map<String, Double> result = runAlgorithm();
 //
 //        // collect results
-       String filename =  algorithm + "@" + Dates.now() + ".txt";
-       String results = tempDirPath + filename;
+        String filename = algorithm + "@" + Dates.now() + ".txt";
+        String results = tempDirPath + filename;
 
 //        // send notification
 //        notifyMe(results);
@@ -86,10 +87,10 @@ public class LibRecService {
 
         // LibRec outputs
         outputOptions = cf.getParamOptions(cf.getOutputSetup());
-		if (outputOptions != null) {
-			isMeasuresOnly = outputOptions.contains("--measures-only");
-			tempDirPath = outputOptions.getString("-dir", "./Results/");
-		}
+        if (outputOptions != null) {
+            isMeasuresOnly = outputOptions.contains("--measures-only");
+            tempDirPath = outputOptions.getString("-dir", "./Results/");
+        }
         // make output directory
         tempDirPath = FileIO.makeDirectory(tempDirPath);
     }
@@ -100,14 +101,14 @@ public class LibRecService {
         rateDao = new DataDAO(config.getDataset());
         ratingOptions = cf.getParamOptions(config.getRatingSetup());
 
-		List<String> cols = ratingOptions.getOptions("-columns");
-		columns = new int[cols.size()];
-		for (int i = 0; i < cols.size(); i++)
-			columns[i] = Integer.parseInt(cols.get(i));
+        List<String> cols = ratingOptions.getOptions("-columns");
+        columns = new int[cols.size()];
+        for (int i = 0; i < cols.size(); i++)
+            columns[i] = Integer.parseInt(cols.get(i));
 
-		binThold = ratingOptions.getFloat("-threshold");
+        binThold = ratingOptions.getFloat("-threshold");
 
-		// time unit of ratings' timestamps
+        // time unit of ratings' timestamps
         timeUnit = TimeUnit.valueOf(ratingOptions.getString("--time-unit", "seconds").toUpperCase());
         rateDao.setTimeUnit(timeUnit);
 
@@ -379,28 +380,28 @@ public class LibRecService {
     }
 
     public List<Map<String, Object>> tratar(List<Map<String, Double>> resultados, List<String> algoritmos) {
-        List< Map<String,Object> > todos = new ArrayList();
-        Map<String,Object> a1 = new HashMap<>();
-        Map<String,Object> a2 = new HashMap<>();
-        Map<String,Object> a3 = new HashMap<>();
-        Map<String,Object> a4 = new HashMap<>();
-        Map<String,Object> a5 = new HashMap<>();
-        Map<String,Object> a6 = new HashMap<>();
-        Map<String,Object> a7 = new HashMap<>();
-        Map<String,Object> a8 = new HashMap<>();
-        int i=0;
-        for (Map<String,Double> a:resultados){
+        List<Map<String, Object>> todos = new ArrayList();
+        Map<String, Object> a1 = new HashMap<>();
+        Map<String, Object> a2 = new HashMap<>();
+        Map<String, Object> a3 = new HashMap<>();
+        Map<String, Object> a4 = new HashMap<>();
+        Map<String, Object> a5 = new HashMap<>();
+        Map<String, Object> a6 = new HashMap<>();
+        Map<String, Object> a7 = new HashMap<>();
+        Map<String, Object> a8 = new HashMap<>();
+        int i = 0;
+        for (Map<String, Double> a : resultados) {
 
             if (a.get("isRankingPred") == 1) {
-                if(i==0){
-                    a1.put("name",String.valueOf(Recommender.Measure.Pre5));
-                    a2.put("name",String.valueOf(Recommender.Measure.Pre10));
-                    a3.put("name",String.valueOf(Recommender.Measure.Rec5));
-                    a4.put("name",String.valueOf(Recommender.Measure.Rec10));
-                    a5.put("name",String.valueOf(Recommender.Measure.AUC));
-                    a6.put("name",String.valueOf(Recommender.Measure.MAP));
-                    a7.put("name",String.valueOf(Recommender.Measure.NDCG));
-                    a8.put("name",String.valueOf(Recommender.Measure.MRR));
+                if (i == 0) {
+                    a1.put("name", String.valueOf(Recommender.Measure.Pre5));
+                    a2.put("name", String.valueOf(Recommender.Measure.Pre10));
+                    a3.put("name", String.valueOf(Recommender.Measure.Rec5));
+                    a4.put("name", String.valueOf(Recommender.Measure.Rec10));
+                    a5.put("name", String.valueOf(Recommender.Measure.AUC));
+                    a6.put("name", String.valueOf(Recommender.Measure.MAP));
+                    a7.put("name", String.valueOf(Recommender.Measure.NDCG));
+                    a8.put("name", String.valueOf(Recommender.Measure.MRR));
                 }
                 a1.put(algoritmos.get(i), a.get(String.valueOf(Recommender.Measure.Pre5)));
                 a2.put(algoritmos.get(i), a.get(String.valueOf(Recommender.Measure.Pre10)));
@@ -411,13 +412,13 @@ public class LibRecService {
                 a7.put(algoritmos.get(i), a.get(String.valueOf(Recommender.Measure.NDCG)));
                 a8.put(algoritmos.get(i), a.get(String.valueOf(Recommender.Measure.MRR)));
             } else {
-                if(i==0){
-                    a1.put("name",String.valueOf(Recommender.Measure.MAE));
-                    a2.put("name",String.valueOf(Recommender.Measure.RMSE));
-                    a3.put("name",String.valueOf(Recommender.Measure.NMAE));
-                    a4.put("name",String.valueOf(Recommender.Measure.rMAE));
-                    a5.put("name",String.valueOf(Recommender.Measure.rRMSE));
-                    a6.put("name",String.valueOf(Recommender.Measure.MPE));
+                if (i == 0) {
+                    a1.put("name", String.valueOf(Recommender.Measure.MAE));
+                    a2.put("name", String.valueOf(Recommender.Measure.RMSE));
+                    a3.put("name", String.valueOf(Recommender.Measure.NMAE));
+                    a4.put("name", String.valueOf(Recommender.Measure.rMAE));
+                    a5.put("name", String.valueOf(Recommender.Measure.rRMSE));
+                    a6.put("name", String.valueOf(Recommender.Measure.MPE));
                 }
                 a1.put(algoritmos.get(i), a.get(String.valueOf(Recommender.Measure.MAE)));
                 a2.put(algoritmos.get(i), a.get(String.valueOf(Recommender.Measure.RMSE)));
@@ -435,30 +436,35 @@ public class LibRecService {
         todos.add(a4);
         todos.add(a5);
         todos.add(a6);
-        if(!a8.isEmpty()){
+        if (!a8.isEmpty()) {
             todos.add(a7);
             todos.add(a8);
         }
         return todos;
     }
 
-    @Scheduled(fixedDelay=5000)
-    void iasdjoad() throws InterruptedException {
-        if(!isRun && existsConfigToRun()){
-
+    @Scheduled(fixedDelay = 5000)
+    void iasdjoad()  {
+        if (!isRun && existsConfigToRun()) {
+            ConfigurationData config = nextConfigToRun();
+            try {
+                run(config);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    boolean existsConfigToRun(){
-        if(scheduleList.isEmpty()){
+    private boolean existsConfigToRun() {
+        if (scheduleList.isEmpty()) {
             return false;
         }
-        for (ScheduleObject scheduleObject: scheduleList) {
-            if(scheduleObject.getStatus() == StatusReading.WAITING){
+        for (ScheduleObject scheduleObject : scheduleList) {
+            if (scheduleObject.getStatus() == StatusReading.WAITING) {
                 return true;
-            }else if(scheduleObject.getStatus() == StatusReading.RUN){
-                for (ConfigurationData config: scheduleObject.getListConfiguration()){
-                    if(config.getStatus() == StatusReading.WAITING){
+            } else if (scheduleObject.getStatus() == StatusReading.RUN) {
+                for (ConfigurationData config : scheduleObject.getListConfiguration()) {
+                    if (config.getStatus() == StatusReading.WAITING) {
                         return true;
                     }
                 }
@@ -466,5 +472,24 @@ public class LibRecService {
         }
 
         return false;
+    }
+
+    private ConfigurationData nextConfigToRun() {
+        for (ScheduleObject scheduleObject : scheduleList) {
+            if (scheduleObject.getStatus() == StatusReading.RUN) {
+                for (ConfigurationData config : scheduleObject.getListConfiguration()) {
+                    if (config.getStatus() == StatusReading.WAITING) {
+                        return config;
+                    }
+                }
+            } else if (scheduleObject.getStatus() == StatusReading.WAITING) {
+                for (ConfigurationData config : scheduleObject.getListConfiguration()) {
+                    if (config.getStatus() == StatusReading.WAITING) {
+                        return config;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
