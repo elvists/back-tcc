@@ -1,9 +1,13 @@
 package br.ufba.back.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import happy.coding.io.LineConfiger;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ConfigurationData {
 
     private StatusReading status;
@@ -25,6 +29,15 @@ public class ConfigurationData {
     private String regLambda;
     private String learnRate;
     private String pgmSetup;
+    private Map<String, Double> resultados;
+
+    public Map<String, Double> getResultados() {
+        return resultados;
+    }
+
+    public void setResultados(Map<String, Double> resultados) {
+        this.resultados = resultados;
+    }
 
     public String getPgmSetup() {
         return pgmSetup;

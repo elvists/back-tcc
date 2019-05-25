@@ -1,6 +1,7 @@
 package br.ufba.back.service;
 
 import br.ufba.back.model.ConfigurationData;
+import br.ufba.back.model.Results;
 import br.ufba.back.model.ScheduleObject;
 import br.ufba.back.model.StatusReading;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,10 +25,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static librec.intf.Recommender.Measure;
@@ -444,11 +442,13 @@ public class LibRecService {
     }
 
     @Scheduled(fixedDelay = 5000)
-    void iasdjoad()  {
+    void iasdjoad() {
         if (!isRun && existsConfigToRun()) {
             ConfigurationData config = nextConfigToRun();
             try {
-                run(config);
+                config.setStatus(StatusReading.RUN);
+                config.setResultados(run(config));
+                config.setStatus(StatusReading.FINISHED);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -460,6 +460,8 @@ public class LibRecService {
             return false;
         }
         for (ScheduleObject scheduleObject : scheduleList) {
+            Boolean run = false;
+
             if (scheduleObject.getStatus() == StatusReading.WAITING) {
                 return true;
             } else if (scheduleObject.getStatus() == StatusReading.RUN) {
@@ -467,7 +469,14 @@ public class LibRecService {
                     if (config.getStatus() == StatusReading.WAITING) {
                         return true;
                     }
+                    if (config.getStatus() == StatusReading.RUN) {
+                        run = true;
+                    }
                 }
+                if (!run) {
+                    scheduleObject.setStatus(StatusReading.FINISHED);
+                }
+
             }
         }
 
@@ -485,11 +494,56 @@ public class LibRecService {
             } else if (scheduleObject.getStatus() == StatusReading.WAITING) {
                 for (ConfigurationData config : scheduleObject.getListConfiguration()) {
                     if (config.getStatus() == StatusReading.WAITING) {
+                        scheduleObject.setStatus(StatusReading.RUN);
                         return config;
                     }
                 }
             }
         }
         return null;
+    }
+
+
+    public String addConfig(List<ConfigurationData> configs) {
+        ScheduleObject a = new ScheduleObject();
+        for (ConfigurationData config : configs) {
+            config.setStatus(StatusReading.WAITING);
+        }
+        a.setListConfiguration(configs);
+        String id = UUID.randomUUID().toString();
+        a.setId(id);
+        a.setStatus(StatusReading.WAITING);
+        scheduleList.add(a);
+        return id;
+    }
+
+    public Object getResult(String id) {
+        List<Map<String, Double>> resultados = new ArrayList<>();
+        List<String> algoritmos = new ArrayList<>();
+
+        for (ScheduleObject so : scheduleList) {
+            if (so.getId().equals(id)) {
+                if (so.getStatus() == StatusReading.WAITING) {
+                    return "Suas configurações estão na lista para serem processadas.";
+                }
+
+                if (so.getStatus() == StatusReading.RUN) {
+                    return "Suas configurações estão sendo executadas.";
+                }
+                for (ConfigurationData config : so.getListConfiguration()) {
+                    resultados.add(config.getResultados());
+                    algoritmos.add(config.getRecommender());
+                }
+            }
+
+        }
+        if(resultados.isEmpty()){
+            return "ID não encontrado!";
+        }
+        return new Results(tratar(resultados, algoritmos), algoritmos);
+    }
+
+    public List<ScheduleObject> getList() {
+        return scheduleList;
     }
 }
