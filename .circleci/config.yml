@@ -45,5 +45,5 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run: docker login -u $USER_DOCKER_HUB -p $PASSWORD_DOCKER_HUB	
-      - run: docker build -t elvists/tcc-back:$CIRCLE_BRANCH .
-      - run: docker push elvists/tcc-back:$CIRCLE_BRANCH
+      - run: docker build -t elvists/tcc-back:final .
+      - run: docker push elvists/tcc-back:final
